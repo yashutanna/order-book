@@ -66,6 +66,7 @@ The api should have the following endpoints:
 3. Recent Trades: 
 
 ```
+[
   {
     "price": "781000",
     "quantity": "0.00263643",
