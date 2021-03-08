@@ -118,7 +118,7 @@ export const fillOrders = (input: LimitOrderInput, source: Orders): { trades: Tr
     // remove as many full orders as possible
     while (sortedOrders.length && price >= sortedOrders[0].price && runningQuantity - sortedOrders[0].quantity >= 0) {
       const removedOrder = sortedOrders.shift();
-      ordersThatFillTrade.push(removedOrder);
+      ordersThatFillTrade.push({...removedOrder, price: side === "buy" ? Math.min(sortedOrders[0].price, price): Math.max(sortedOrders[0].price, price) });
       runningQuantity = runningQuantity - removedOrder.quantity;
     }
   }
@@ -136,6 +136,7 @@ export const fillOrders = (input: LimitOrderInput, source: Orders): { trades: Tr
     if ((side === "buy" && price >= sortedOrders[0].price) || (side === "sell" && price <= sortedOrders[0].price)) {
       ordersThatFillTrade.push({
         ...sortedOrders[0],
+        price: side === "buy" ? Math.min(sortedOrders[0].price, price): Math.max(sortedOrders[0].price, price),
         quantity: runningQuantity,
       })
       sortedOrders[0] = {
@@ -145,7 +146,7 @@ export const fillOrders = (input: LimitOrderInput, source: Orders): { trades: Tr
     } else {
       resultingOrders = addToOrders({...input, quantity: runningQuantity}, { ...allOrders, [oppositeSide]: sortedOrders})
     }
-  } else {
+  } else if (runningQuantity > 0) {
     resultingOrders = addToOrders({...input, quantity: runningQuantity}, { ...allOrders, [oppositeSide]: sortedOrders})
   }
   const trades = ordersThatFillTrade.map<Trade>(order => ({
