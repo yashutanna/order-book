@@ -61,23 +61,22 @@ export const placeLimitOrder = (input: LimitOrderInput): LimitOrder => {
     customerOrderId: uuid(),
     ...input
   }
+  const { pair, side, price, quantity } = inputWithDefaults;
   if (limitOrderInputValid(inputWithDefaults)) {
-    if (allOrders[inputWithDefaults.pair][inputWithDefaults.side === "buy" ? "buyOrders" : "sellOrders"][inputWithDefaults.price]) {
-      allOrders[inputWithDefaults.pair][inputWithDefaults.side === "buy" ? "buyOrders" : "sellOrders"][inputWithDefaults.price] = [
-        {
-          side: inputWithDefaults.side,
-          quantity: inputWithDefaults.quantity,
-          price: inputWithDefaults.price,
-          currencyPair: inputWithDefaults.pair,
-          id: inputWithDefaults.customerOrderId,
-        }
-      ];
+    if (allOrders[pair][side === "buy" ? "buyOrders" : "sellOrders"][price]) {
+      allOrders[pair][side === "buy" ? "buyOrders" : "sellOrders"][price].push({
+        side,
+        quantity,
+        price,
+        currencyPair: pair,
+        id: inputWithDefaults.customerOrderId,
+      });
     } else {
-      allOrders[inputWithDefaults.pair][inputWithDefaults.side === "buy" ? "buyOrders" : "sellOrders"][inputWithDefaults.price] = [{
-        side: inputWithDefaults.side,
-        quantity: inputWithDefaults.quantity,
-        price: inputWithDefaults.price,
-        currencyPair: inputWithDefaults.pair,
+      allOrders[pair][side === "buy" ? "buyOrders" : "sellOrders"][price] = [{
+        side,
+        quantity,
+        price,
+        currencyPair: pair,
         id: inputWithDefaults.customerOrderId,
       }];
     }
