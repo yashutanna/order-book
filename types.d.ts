@@ -54,7 +54,6 @@ declare global {
     currencyPair: CurrencyPair,
     takerSide: OrderSide,
     tradedAt: string,
-    id: string,
     quoteVolume: string
   }
 

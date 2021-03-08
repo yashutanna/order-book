@@ -1,6 +1,7 @@
 import allOrders from "./allOrders.json";
 import fs from 'fs';
 import { v4 as uuid } from 'uuid';
+import allTrades from "./allTrades.json"
 
 export const getAvailableQuantity = (orderList: Order[]) => orderList.reduce((total, order) => total + order.quantity, 0);
 /**
@@ -113,17 +114,17 @@ export const fillOrders = (input: LimitOrderInput, source: Orders): { trades: Tr
   const ordersThatFillTrade: Order[] = [];
   const sortedOrders = sortOrders(allOrders[oppositeSide], oppositeSide)
 
-  if (side === "buy" && price > sortedOrders[0].price) {
+  if (side === "buy" && price >= sortedOrders[0].price) {
     // remove as many full orders as possible
-    while (sortedOrders.length && price > sortedOrders[0].price && runningQuantity - sortedOrders[0].quantity >= 0) {
+    while (sortedOrders.length && price >= sortedOrders[0].price && runningQuantity - sortedOrders[0].quantity >= 0) {
       const removedOrder = sortedOrders.shift();
       ordersThatFillTrade.push(removedOrder);
       runningQuantity = runningQuantity - removedOrder.quantity;
     }
   }
-  if (side === "sell" && price < sortedOrders[0].price) {
+  if (side === "sell" && price <= sortedOrders[0].price) {
     // remove as many full orders as possible
-    while (sortedOrders.length && price < sortedOrders[0].price && runningQuantity - sortedOrders[0].quantity >= 0) {
+    while (sortedOrders.length && price <= sortedOrders[0].price && runningQuantity - sortedOrders[0].quantity >= 0) {
       const removedOrder = sortedOrders.shift();
       ordersThatFillTrade.push(removedOrder);
       runningQuantity = runningQuantity - removedOrder.quantity;
@@ -132,17 +133,20 @@ export const fillOrders = (input: LimitOrderInput, source: Orders): { trades: Tr
 
   let resultingOrders = { ...allOrders, [oppositeSide]: sortedOrders};
   if (runningQuantity > 0 && sortedOrders.length) {
-    ordersThatFillTrade.push({
-      ...sortedOrders[0],
-      quantity: runningQuantity,
-    })
-    sortedOrders[0] = {
-      ...sortedOrders[0],
-      quantity: sortedOrders[0].quantity - runningQuantity,
+    if ((side === "buy" && price >= sortedOrders[0].price) || (side === "sell" && price <= sortedOrders[0].price)) {
+      ordersThatFillTrade.push({
+        ...sortedOrders[0],
+        quantity: runningQuantity,
+      })
+      sortedOrders[0] = {
+        ...sortedOrders[0],
+        quantity: sortedOrders[0].quantity - runningQuantity,
+      }
+    } else {
+      resultingOrders = addToOrders({...input, quantity: runningQuantity}, { ...allOrders, [oppositeSide]: sortedOrders})
     }
   } else {
     resultingOrders = addToOrders({...input, quantity: runningQuantity}, { ...allOrders, [oppositeSide]: sortedOrders})
-    console.log({orders: resultingOrders[input.side]})
   }
   const trades = ordersThatFillTrade.map<Trade>(order => ({
     ...order,
@@ -175,7 +179,8 @@ export const placeLimitOrder = (input: LimitOrderInput): LimitOrder => {
     finalOrders = resultingOrders;
     // Prevent file overwrites when running tests
     if (process.env.NODE_ENV !== "test") {
-      fs.writeFileSync("./services/orders/allTrades.json", JSON.stringify(trades, null, 2));
+      const oldTrades = JSON.parse(fs.readFileSync("./services/orders/allTrades.json", "utf8"));
+      fs.writeFileSync("./services/orders/allTrades.json", JSON.stringify([...oldTrades as Trade[], ...trades as Trade[]].sort((t1, t2) => Number(t2.tradedAt) - Number(t1.tradedAt)), null, 2));
     }
   }
   // Prevent file overwrites when running tests
@@ -186,5 +191,5 @@ export const placeLimitOrder = (input: LimitOrderInput): LimitOrder => {
 }
 
 export const getRecentTrades = (): Trade[] => {
-  return [];
+  return allTrades as Trade[];
 }
