@@ -1,7 +1,7 @@
 export {};
 
 declare global {
-  type CurrencyPair = "BTCZAR" | "ETHZAR" | "XRPZAR";
+  type CurrencyPair = "BTCZAR";
   type OrderSide = "sell" | "buy";
 
   interface OrderBookEntry {
@@ -35,15 +35,13 @@ declare global {
     id: string
   }
 
+  type PricedOrders = {
+    [amount: string]: Order[]
+  }
+
   type Orders = {
-    [price in CurrencyPair]: {
-      buyOrders: {
-        [amount: string]: Order[]
-      }
-      sellOrders: {
-        [amount: string]: Order[]
-      }
-    }
+    buy: Order[]
+    sell: Order[]
   }
 
   interface LimitOrder {
@@ -56,8 +54,14 @@ declare global {
     currencyPair: CurrencyPair,
     takerSide: OrderSide,
     tradedAt: string,
-    sequenceId: 1997578,
     id: string,
     quoteVolume: string
+  }
+
+  type OrderFillType = "FULL" | "PARTIAL" | "NONE"
+
+  type OrderFill = {
+    canBeFilled: boolean;
+    fillType: OrderFillType
   }
 }
