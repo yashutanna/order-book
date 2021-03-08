@@ -1,15 +1,15 @@
 export {};
 
 declare global {
-  type CurrencyPair = "BTCZAR";
+  type CurrencyPair = "BTCZAR" | "ETHZAR" | "XRPZAR";
   type OrderSide = "sell" | "buy";
 
   interface OrderBookEntry {
+    orderCount: number
     side: OrderSide,
     quantity: number,
     price: number,
     currencyPair: CurrencyPair,
-    orderCount: number
   }
 
   type OrderBook = {
@@ -27,8 +27,23 @@ declare global {
     timeInForce: "GTC" | "FOK" | "IOC"
   }
 
-  interface Order extends OrderBookEntry{
+  interface Order {
+    side: OrderSide,
+    quantity: number,
+    price: number,
+    currencyPair: CurrencyPair,
     id: string
+  }
+
+  type Orders = {
+    [price in CurrencyPair]: {
+      buyOrders: {
+        [amount: string]: Order[]
+      }
+      sellOrders: {
+        [amount: string]: Order[]
+      }
+    }
   }
 
   interface Trade {

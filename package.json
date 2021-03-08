@@ -6,6 +6,7 @@
   "scripts": {
     "start": "sls offline start",
     "test": "jest",
+    "test:watch": "jest --watch",
     "docs": "swagger-jsdoc"
   },
   "dependencies": {
