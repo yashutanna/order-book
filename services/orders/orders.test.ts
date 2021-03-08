@@ -1,4 +1,5 @@
-import { generateOrderBookFromRawOrders, placeLimitOrder, getRecentTrades } from "./orders";
+import { generateOrderBookFromRawOrders, placeLimitOrder, getRecentTrades, limitOrderInputValid } from "./orders";
+import testLimitOrder from "./testLimitOrder";
 import allOrders from "./testOrders";
 
 const isObject = (input: any) => typeof input === 'object' && input !== null;
@@ -24,14 +25,45 @@ describe("Orders", () => {
     expect(orderBook.asks[0].currencyPair).toBe("BTCZAR");
   });
 
-  it("should return an Object with an id ", () => {
-    const limitOrder = placeLimitOrder();
-    expect(isObject(limitOrder)).toBe(true);
-    expect(limitOrder.id).toBeDefined();
-  });
-
   it("should return an array for recent trades", () => {
     const recentTrades = getRecentTrades();
     expect(Array.isArray(recentTrades)).toBe(true);
+  });
+});
+
+describe("Limit Orders", () => {
+  it("should return an Object with an id", () => {
+    const limitOrder = placeLimitOrder(testLimitOrder);
+    expect(isObject(limitOrder)).toBe(true);
+    expect(limitOrder.id).toBeDefined();
+    expect(typeof limitOrder.id === "string").toBe(true);
+  });
+
+  it("should throw an error for negative quantity in a limit order input", () => {
+    expect(() => { limitOrderInputValid({
+      ...testLimitOrder,
+      quantity: -1
+    }) }).toThrowError();
+  });
+
+  it("should throw an error for negative price in a limit order input", () => {
+    expect(() => { limitOrderInputValid({
+      ...testLimitOrder,
+      price: -100
+    }) }).toThrowError();
+  });
+
+  it("should throw an error for 0 price in a limit order input", () => {
+    expect(() => { limitOrderInputValid({
+      ...testLimitOrder,
+      price: 0
+    }) }).toThrowError();
+  });
+
+  it("should throw an error for 0 quantity in a limit order input", () => {
+    expect(() => { limitOrderInputValid({
+      ...testLimitOrder,
+      quantity: 0
+    }) }).toThrowError();
   });
 });

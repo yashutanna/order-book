@@ -1,0 +1,24 @@
+{
+  "BTCZAR": {
+    "buyOrders": {},
+    "sellOrders": {
+      "100": [
+        {
+          "side": "sell",
+          "quantity": 1,
+          "price": 100,
+          "currencyPair": "BTCZAR",
+          "id": "4d4596d4-123a-4caa-88b5-c55778b11898"
+        }
+      ]
+    }
+  },
+  "ETHZAR": {
+    "buyOrders": {},
+    "sellOrders": {}
+  },
+  "XRPZAR": {
+    "buyOrders": {},
+    "sellOrders": {}
+  }
+}

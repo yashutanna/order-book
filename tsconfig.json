@@ -8,6 +8,7 @@
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
+    "resolveJsonModule": true,
     "target": "es2017",
     "outDir": "lib"
   },

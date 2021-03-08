@@ -17,7 +17,7 @@ declare global {
     bids: OrderBookEntry[],
   }
 
-  type NewOrderInput = {
+  type LimitOrderInput = {
     side: OrderSide,
     quantity: number,
     price: number,
@@ -44,6 +44,10 @@ declare global {
         [amount: string]: Order[]
       }
     }
+  }
+
+  interface LimitOrder {
+    id: string;
   }
 
   interface Trade {

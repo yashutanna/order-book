@@ -1,4 +1,6 @@
-import allOrders from "./allOrders";
+import allOrders from "./allOrders.json";
+import fs from 'fs';
+import { v4 as uuid } from 'uuid';
 
 /**
  * @param  {Orders} rawOrders all orders in the raw form as defined in the Orders type
@@ -40,11 +42,51 @@ export const generateOrderBookFromRawOrders = (rawOrders: Orders, currencyPair: 
  * @returns OrderBook 
  */
 export const getOrderBook = (currencyPair: CurrencyPair = "BTCZAR"): OrderBook => {
-  return generateOrderBookFromRawOrders(allOrders, currencyPair);
+  return generateOrderBookFromRawOrders(allOrders as Orders, currencyPair);
 }
 
-export const placeLimitOrder = () => {
-  return { id: 1 };
+export const limitOrderInputValid = (input: LimitOrderInput): boolean => {
+  if (input.price <= 0) {
+    throw new Error("price must be a positive number");
+  }
+  if (input.quantity <= 0) {
+    throw new Error("quantity must be a positive number");
+  }
+  return true;
+}
+
+export const placeLimitOrder = (input: LimitOrderInput): LimitOrder => {
+  const inputWithDefaults: LimitOrderInput = {
+    timeInForce: "GTC",
+    customerOrderId: uuid(),
+    ...input
+  }
+  if (limitOrderInputValid(inputWithDefaults)) {
+    if (allOrders[inputWithDefaults.pair][inputWithDefaults.side === "buy" ? "buyOrders" : "sellOrders"][inputWithDefaults.price]) {
+      allOrders[inputWithDefaults.pair][inputWithDefaults.side === "buy" ? "buyOrders" : "sellOrders"][inputWithDefaults.price] = [
+        {
+          side: inputWithDefaults.side,
+          quantity: inputWithDefaults.quantity,
+          price: inputWithDefaults.price,
+          currencyPair: inputWithDefaults.pair,
+          id: inputWithDefaults.customerOrderId,
+        }
+      ];
+    } else {
+      allOrders[inputWithDefaults.pair][inputWithDefaults.side === "buy" ? "buyOrders" : "sellOrders"][inputWithDefaults.price] = [{
+        side: inputWithDefaults.side,
+        quantity: inputWithDefaults.quantity,
+        price: inputWithDefaults.price,
+        currencyPair: inputWithDefaults.pair,
+        id: inputWithDefaults.customerOrderId,
+      }];
+    }
+    // Prevent file overwrites when running tests
+    if(process.env.NODE_ENV !== "test"){
+      fs.writeFileSync("./services/orders/allOrders.json", JSON.stringify(allOrders, null, 2));
+    }
+    return { id: inputWithDefaults.customerOrderId };
+  }
 }
 
 export const getRecentTrades = (): Trade[] => {
