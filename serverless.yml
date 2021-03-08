@@ -1,0 +1,32 @@
+service: order-book
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
+plugins:
+  - serverless-offline
+  - serverless-webpack
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  apiGateway:
+    shouldStartNameWithService: true
+    minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+
+functions:
+  graphql:
+    handler: app.handler
+    events:
+      - http:
+          path: hello
+          method: get
+          cors: true
+      - http:
+          path: docs
+          method: get
