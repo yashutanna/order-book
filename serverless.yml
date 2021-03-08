@@ -24,9 +24,14 @@ functions:
     handler: app.handler
     events:
       - http:
-          path: hello
+          path: orders
           method: get
           cors: true
       - http:
-          path: docs
+          path: orders/limit
+          method: post
+          cors: true
+      - http:
+          path: orders/trades/recent
           method: get
+          cors: true

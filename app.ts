@@ -1,10 +1,13 @@
 import express from 'express';
 import serverless from 'serverless-http';
-import hello from "./routes/hello";
+import orders from "./routes/orders";
 
 const app = express();
 
-app.use("/hello", hello);
+app.use(express.json());
+app.use(express.urlencoded());
+
+app.use("/orders", orders);
 
 const handler = serverless(app);
 
