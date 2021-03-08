@@ -57,12 +57,8 @@ The api should have the following endpoints:
 ```
 
 **Response:**
-```{
-	/*NOTE: When you receive this response with an id,
-	it does not always mean that the order has been placed. 
-	When the response is 202 Accepted, you can either use the 
-	Order Status REST API or use WebSocket API to receive status
-	update about this order. */
+```
+{
     "id": "558f5e0a-ffd1-46dd-8fae-763d93fa2f25" 
 }
 ```
