@@ -1,8 +1,9 @@
-import allOrders from "./allOrders.json";
 import fs from 'fs';
 import { v4 as uuid } from 'uuid';
-import allTrades from "./allTrades.json"
 
+const getOrdersFromFile = () => JSON.parse(fs.readFileSync(orderFilePath, "utf8"));
+
+const orderFilePath = "./services/orders/allOrders.json";
 export const getAvailableQuantity = (orderList: Order[]) => orderList.reduce((total, order) => total + order.quantity, 0);
 /**
  * @param  {Orders} rawOrders all orders in the raw form as defined in the Orders type
@@ -58,7 +59,7 @@ export const generateOrderBookFromRawOrders = (rawOrders: Orders, currencyPair: 
  * @returns OrderBook 
  */
 export const getOrderBook = (currencyPair: CurrencyPair = "BTCZAR"): OrderBook => {
-  return generateOrderBookFromRawOrders(allOrders as Orders, currencyPair);
+  return generateOrderBookFromRawOrders(getOrdersFromFile() as Orders, currencyPair);
 }
 
 export const limitOrderInputValid = (input: LimitOrderInput): boolean => {
@@ -114,11 +115,12 @@ export const fillOrders = (input: LimitOrderInput, source: Orders): { trades: Tr
   const ordersThatFillTrade: Order[] = [];
   const sortedOrders = sortOrders(allOrders[oppositeSide], oppositeSide)
 
+  console.log({ sortedOrders });
   if (side === "buy" && price >= sortedOrders[0].price) {
     // remove as many full orders as possible
     while (sortedOrders.length && price >= sortedOrders[0].price && runningQuantity - sortedOrders[0].quantity >= 0) {
       const removedOrder = sortedOrders.shift();
-      ordersThatFillTrade.push({...removedOrder, price: side === "buy" ? Math.min(sortedOrders[0].price, price): Math.max(sortedOrders[0].price, price) });
+      ordersThatFillTrade.push({...removedOrder, price: Math.min(removedOrder.price, price) });
       runningQuantity = runningQuantity - removedOrder.quantity;
     }
   }
@@ -126,12 +128,12 @@ export const fillOrders = (input: LimitOrderInput, source: Orders): { trades: Tr
     // remove as many full orders as possible
     while (sortedOrders.length && price <= sortedOrders[0].price && runningQuantity - sortedOrders[0].quantity >= 0) {
       const removedOrder = sortedOrders.shift();
-      ordersThatFillTrade.push(removedOrder);
+      ordersThatFillTrade.push({...removedOrder, price: Math.max(removedOrder.price, price) });
       runningQuantity = runningQuantity - removedOrder.quantity;
     }
   }
 
-  let resultingOrders = { ...allOrders, [oppositeSide]: sortedOrders};
+  let resultingOrders = { ...getOrdersFromFile(), [oppositeSide]: sortedOrders};
   if (runningQuantity > 0 && sortedOrders.length) {
     if ((side === "buy" && price >= sortedOrders[0].price) || (side === "sell" && price <= sortedOrders[0].price)) {
       ordersThatFillTrade.push({
@@ -144,10 +146,10 @@ export const fillOrders = (input: LimitOrderInput, source: Orders): { trades: Tr
         quantity: sortedOrders[0].quantity - runningQuantity,
       }
     } else {
-      resultingOrders = addToOrders({...input, quantity: runningQuantity}, { ...allOrders, [oppositeSide]: sortedOrders})
+      resultingOrders = addToOrders({...input, quantity: runningQuantity}, { ...getOrdersFromFile(), [oppositeSide]: sortedOrders})
     }
   } else if (runningQuantity > 0) {
-    resultingOrders = addToOrders({...input, quantity: runningQuantity}, { ...allOrders, [oppositeSide]: sortedOrders})
+    resultingOrders = addToOrders({...input, quantity: runningQuantity}, { ...getOrdersFromFile(), [oppositeSide]: sortedOrders})
   }
   const trades = ordersThatFillTrade.map<Trade>(order => ({
     ...order,
@@ -168,15 +170,15 @@ export const placeLimitOrder = (input: LimitOrderInput): LimitOrder => {
   if (!limitOrderInputValid(inputWithDefaults)) {
     throw new Error("Limit order input is not valid")
   }
-  const canFill = canFillOrder(input, allOrders as Orders);
-  let finalOrders = allOrders;
+  const canFill = canFillOrder(input, getOrdersFromFile() as Orders);
+  let finalOrders = getOrdersFromFile();
   if (!canFill) {
-    finalOrders = addToOrders(inputWithDefaults, allOrders as Orders);
+    finalOrders = addToOrders(inputWithDefaults, getOrdersFromFile() as Orders);
   } else {
     const {
       trades,
       resultingOrders
-    } = fillOrders(input, allOrders as Orders);
+    } = fillOrders(input, getOrdersFromFile() as Orders);
     finalOrders = resultingOrders;
     // Prevent file overwrites when running tests
     if (process.env.NODE_ENV !== "test") {
@@ -192,5 +194,5 @@ export const placeLimitOrder = (input: LimitOrderInput): LimitOrder => {
 }
 
 export const getRecentTrades = (): Trade[] => {
-  return allTrades as Trade[];
+  return JSON.parse(fs.readFileSync("./services/orders/allTrades.json", "utf8")) as Trade[];
 }

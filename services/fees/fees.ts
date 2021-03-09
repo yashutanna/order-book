@@ -15,7 +15,6 @@ export const initWebSocket = () => {
   
   ws.on('message', function incoming(data) {
     var message = JSON.parse(data.toString("utf8")) as InfuraBlockResponse;
-    console.log(JSON.stringify(message, null, 2));
     if(message.method === "eth_subscription"){
       if (process.env.NODE_ENV !== "test") {
         const blocks = JSON.parse(fs.readFileSync("./services/fees/blocks.json", "utf8"));

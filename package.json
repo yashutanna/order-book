@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "build": "webpack",
-    "prestart": "npm run build && rm -f ./services/fees/blocks.json && echo [] >> ./services/fees/blocks.json",
+    "prestart": "npm run build && ./cleanup.sh",
     "start": "node -r dotenv/config .webpack/main.js",
     "test": "jest",
     "test:watch": "jest --watch"

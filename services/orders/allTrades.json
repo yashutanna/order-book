@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "side": "sell",
+    "quantity": 1,
+    "price": 105,
+    "currencyPair": "BTCZAR",
+    "id": "25d1985b-1400-4b27-a4a8-d1a386e23218",
+    "takerSide": "sell",
+    "tradedAt": "1615307584471",
+    "quoteVolume": "1"
+  }
+]

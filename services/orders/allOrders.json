@@ -1,12 +1,4 @@
 {
-  "buy": [
-    {
-      "side": "buy",
-      "quantity": 1,
-      "price": 105,
-      "currencyPair": "BTCZAR",
-      "id": "9c7e0180-39f7-48bb-97e6-c1f6ffdd6798"
-    }
-  ],
+  "buy": [],
   "sell": []
 }
