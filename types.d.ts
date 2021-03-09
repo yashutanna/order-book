@@ -63,4 +63,30 @@ declare global {
     canBeFilled: boolean;
     fillType: OrderFillType
   }
+
+  type InfuraBlockResponse = {
+    jsonrpc: string;
+    method: string;
+    params: {
+      subscription: string;
+      result: {
+        number: string;
+        hash: string;
+        parentHash: string;
+        sha3Uncles: string;
+        logsBloom: string;
+        transactionsRoot: string;
+        stateRoot: string;
+        receiptsRoot: string;
+        miner: string;
+        difficulty: string;
+        extraData: string;
+        gasLimit: string;
+        gasUsed: string;
+        timestamp: string;
+        nonce: string;
+        mixHash: string;
+      }
+    }
+  }
 }

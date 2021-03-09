@@ -35,14 +35,13 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/dev/orders/limit",
+					"raw": "http://localhost:3000/orders/limit",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"dev",
 						"orders",
 						"limit"
 					]
@@ -56,14 +55,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/dev/orders",
+					"raw": "http://localhost:3000/orders",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"dev",
 						"orders"
 					]
 				}
@@ -76,14 +74,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/dev/orders/trades/recent",
+					"raw": "http://localhost:3000/orders/trades/recent",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"dev",
 						"orders",
 						"trades",
 						"recent"
@@ -98,14 +95,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/dev/fees/estimate?last=30",
+					"raw": "http://localhost:3000/fees/estimate?last=30",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"dev",
 						"fees",
 						"estimate"
 					],

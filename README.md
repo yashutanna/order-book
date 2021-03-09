@@ -131,7 +131,7 @@ The api should have the following endpoints:
 1. pull the repo to your machine
 2. run `npm install`
 3. run `npm run start`
-4. add your etherscan and infura keys to `.env` file
+4. add your etherscan and infura keys to `.env.example` file and rename the file to .env
 5. use the `engineering.postman_collection.json` file to hit endpoints using Postman
 ---
 ## Tests
