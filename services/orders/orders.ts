@@ -115,7 +115,6 @@ export const fillOrders = (input: LimitOrderInput, source: Orders): { trades: Tr
   const ordersThatFillTrade: Order[] = [];
   const sortedOrders = sortOrders(allOrders[oppositeSide], oppositeSide)
 
-  console.log({ sortedOrders });
   if (side === "buy" && price >= sortedOrders[0].price) {
     // remove as many full orders as possible
     while (sortedOrders.length && price >= sortedOrders[0].price && runningQuantity - sortedOrders[0].quantity >= 0) {
