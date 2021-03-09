@@ -124,3 +124,12 @@ The api should have the following endpoints:
 * Operating System:          MacOS Big Sur 
 * Node Version:              12.15.0
 * Serverless Version:        2.28.7
+
+---
+## Getting Started
+
+1. pull the repo to your machine
+2. run `npm install`
+3. run `npm run start`
+
+run `npm run test` to run all unit tests
