@@ -9,6 +9,8 @@ plugins:
   - serverless-offline
   - serverless-webpack
 
+useDotenv: true
+
 provider:
   name: aws
   runtime: nodejs12.x
@@ -33,5 +35,9 @@ functions:
           cors: true
       - http:
           path: orders/trades/recent
+          method: get
+          cors: true
+      - http:
+          path: fees/estimate
           method: get
           cors: true

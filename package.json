@@ -12,6 +12,7 @@
   "dependencies": {
     "@types/swagger-jsdoc": "^6.0.0",
     "apollo-server-express": "^2.21.0",
+    "ethers": "^5.0.32",
     "express": "^4.17.1",
     "express-basic-auth": "^1.2.0",
     "serverless-http": "^2.7.0",
